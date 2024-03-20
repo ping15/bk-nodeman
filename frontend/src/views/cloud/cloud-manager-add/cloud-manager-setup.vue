@@ -223,7 +223,7 @@ export default class CloudManagerSetup extends Mixins(formLabelMixin, FilterIpMi
     });
     this.defaultVersion = default_version;
   };
-  private osMap = {
+  private osMap: Dictionary = {
     LINUX: 'linux',
     WINDOWS: 'windows',
     AIX: 'aix',
@@ -273,13 +273,14 @@ export default class CloudManagerSetup extends Mixins(formLabelMixin, FilterIpMi
 
   private created() {
     this.handleInit();
-    this.getDefaultVersion();
   }
   private mounted() {
     this.marginLeft = this.initLabelWidth(this.formRef) || 0;
   }
 
   private async handleInit() {
+    // 获取默认版本
+    await this.getDefaultVersion();
     this.loading = true;
     switch (this.type) {
       case 'create':
