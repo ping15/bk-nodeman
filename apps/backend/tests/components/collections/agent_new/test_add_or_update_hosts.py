@@ -218,6 +218,7 @@ class AddOrUpdateHostsTestCase(utils.AgentServiceBaseTestCase):
             bk_host_id = host_info["bk_host_id"]
             host_obj = host_id__host_obj_map[bk_host_id]
             # 动态 IP 新增主机后，原来的 bk_host_id 会被更新
+
             self.assertFalse(bk_host_id in self.host_ids_with_dynamic_ip)
             self.assertEqual(host_info["bk_biz_id"], host_obj.bk_biz_id)
             self.assertEqual(bk_host_id, host_obj.bk_host_id)
