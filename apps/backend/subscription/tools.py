@@ -634,10 +634,6 @@ def get_host_detail(host_info_list: list, bk_biz_id: int = None):
                 rules.append(rule)
 
         cond = {"host_property_filter": {"condition": "OR", "rules": rules}}
-
-    elif "field" in first_host_info and "operator" in first_host_info and "value" in first_host_info:
-        cond = {"host_property_filter": {"condition": "AND", "rules": host_info_list}}
-
     else:
         # 如果不满足 bk_host_id / ip & bk_cloud_id 的传入格式，此时直接返回空列表，表示查询不到任何主机
         # 说明：
@@ -646,12 +642,7 @@ def get_host_detail(host_info_list: list, bk_biz_id: int = None):
         #   3. 综上所述，提前返回可以减少无效执行逻辑及网络IO
         return []
 
-    hosts = list_biz_hosts(
-        bk_biz_id=bk_biz_id,
-        condition=cond,
-        func="list_biz_hosts" if bk_biz_id else "list_hosts_without_biz",
-        source="get_host_detail:list_hosts_without_biz",
-    )
+    hosts = list_biz_hosts(bk_biz_id, cond, "list_hosts_without_biz", source="get_host_detail:list_hosts_without_biz")
     bk_host_ids = []
     bk_cloud_ids = []
     for host in hosts:
@@ -1280,6 +1271,7 @@ def get_instances_by_scope(scope: Dict[str, Union[Dict, int, Any]]) -> Dict[str,
         instances_dict = {}
         for node in nodes:
             scope["node_type"] = node["node_type"]
+            scope["bk_biz_id"] = node["bk_biz_id"]
             scope["nodes"] = node["sub_nodes"]
             instances_dict.update(get_instances_by_scope(scope))
 
